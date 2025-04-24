@@ -27,7 +27,7 @@ export default function VoiceChatBot() {
       const whisperRes = await fetch("https://api.openai.com/v1/audio/transcriptions", {
         method: "POST",
         headers: {
-          Authorization: `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`
+          Authorization: `Bearer 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`
         },
         body: formData
       });
