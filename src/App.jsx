@@ -27,7 +27,7 @@ export default function VoiceChatBot() {
       const whisperRes = await fetch("https://api.openai.com/v1/audio/transcriptions", {
         method: "POST",
         headers: {
-          Authorization: `Bearer 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`
+          Authorization: `Bearer sk-...aDQA`
         },
         body: formData
       });
@@ -41,10 +41,10 @@ export default function VoiceChatBot() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer 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`
+          Authorization: `Bearer sk-...aDQA`
         },
         body: JSON.stringify({
-          model: "gpt-4-turbo",
+          model: "gpt-3.5-turbo",
           messages: [
             {
               role: "system",
