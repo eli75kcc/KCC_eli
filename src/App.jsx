@@ -58,6 +58,7 @@ export default function VoiceChatBot() {
         })
       });
       const chatData = await chatRes.json();
+      console.log("💬 GPT 응답 내용:", chatData);
       const answer = chatData.choices?.[0]?.message?.content || "죄송합니다. 답변을 생성할 수 없습니다.";
       setResponse(answer);
 
