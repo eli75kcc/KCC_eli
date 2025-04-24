@@ -27,7 +27,7 @@ export default function VoiceChatBot() {
       const whisperRes = await fetch("https://api.openai.com/v1/audio/transcriptions", {
         method: "POST",
         headers: {
-          Authorization: `Bearer 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`
+          Authorization: `Bearer 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`
         },
         body: formData
       });
@@ -41,7 +41,7 @@ export default function VoiceChatBot() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer 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`
+          Authorization: `Bearer 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`
         },
         body: JSON.stringify({
           model: "gpt-3.5-turbo",
