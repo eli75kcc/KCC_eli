@@ -27,7 +27,7 @@ export default function VoiceChatBot() {
       const whisperRes = await fetch("https://api.openai.com/v1/audio/transcriptions", {
         method: "POST",
         headers: {
-          Authorization: `Bearer YOUR_OPENAI_API_KEY`
+          Authorization: `Bearer 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`
         },
         body: formData
       });
@@ -37,20 +37,27 @@ export default function VoiceChatBot() {
       const detectedLang = whisperData.language || "en";
       setLanguage(detectedLang);
 
-      const contextRes = await fetch("https://your-server.com/api/search", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ query: text })
-      });
-      const contextData = await contextRes.json();
+      // 📎 검색 API 예외 처리
+      let contextData = { content: "" };
+      try {
+        const contextRes = await fetch("https://your-server.com/api/search", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: text })
+        });
+        if (contextRes.ok) {
+          contextData = await contextRes.json();
+        }
+      } catch (e) {
+        console.warn("Context search skipped (no server).");
+      }
 
+      // 📎 ChatGPT 호출
       const chatRes = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer YOUR_OPENAI_API_KEY`
+          Authorization: `Bearer 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`
         },
         body: JSON.stringify({
           model: "gpt-4",
@@ -62,18 +69,25 @@ export default function VoiceChatBot() {
         })
       });
       const chatData = await chatRes.json();
-      const answer = chatData.choices[0].message.content;
+      const answer = chatData.choices?.[0]?.message?.content || "죄송합니다. 답변을 생성할 수 없습니다.";
       setResponse(answer);
 
+      // 🗣️ 음성 출력
       const utterance = new SpeechSynthesisUtterance(answer);
       utterance.lang = detectedLang;
-      utterance.onstart = () => setSpeaking(true);
+      utterance.onstart = () => {
+        console.log("🗣️ Speaking...");
+        setSpeaking(true);
+      };
+      utterance.onerror = (e) => {
+        console.error("🔇 Speech synthesis error:", e);
+      };
       utterance.onend = () => setSpeaking(false);
       speechSynthesis.speak(utterance);
     };
 
     mediaRecorder.start();
-    setTimeout(() => mediaRecorder.stop(), 7000); // Record 7 seconds
+    setTimeout(() => mediaRecorder.stop(), 7000); // 최대 7초 녹음
   }
 
   return (
